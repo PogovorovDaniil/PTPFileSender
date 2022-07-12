@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 
 namespace PTPFileSender.Services
 {
-    internal static class PTPService
+    internal static class PeerToPeerService
     {
         private static PTPClient client;
-        static PTPService()
+        static PeerToPeerService()
         {
             client = new PTPClient("194.61.3.168", 22345, 0);
             Task.Run(client.Work);

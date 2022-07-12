@@ -16,7 +16,7 @@ namespace PTPFileSender.Views
             uploadController = new UploadController();
             uploadController.MoveProgressBar += UploadController_MoveProgressBar;
 
-            string selfKey = PTPService.GetSelfKey();
+            string selfKey = PeerToPeerService.GetSelfKey();
             SelfKey_TextBox.Text = selfKey;
         }
         private void UploadController_MoveProgressBar(double percent)

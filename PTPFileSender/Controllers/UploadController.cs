@@ -36,7 +36,7 @@ namespace PTPFileSender.Controllers
         {
             try
             {
-                bool connected = await PTPService.ConnectNode(key);
+                bool connected = await PeerToPeerService.ConnectNode(key);
                 node = new PTPNode(key);
                 return connected;
             }
