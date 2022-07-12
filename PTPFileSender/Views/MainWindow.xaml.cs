@@ -1,4 +1,5 @@
-﻿using PTPFileSender.Controllers;
+﻿using PTPFileSender.Constants;
+using PTPFileSender.Controllers;
 using PTPFileSender.Helpers;
 using PTPFileSender.Services;
 using System.Windows;
@@ -35,7 +36,7 @@ namespace PTPFileSender.Views
                 {
                     uploadController.DisconnectNode();
                     NodeKey_TextBox.IsEnabled = true;
-                    button.Content = "Подключиться";
+                    button.Content = Str.Connect;
 
                 }
                 else
@@ -44,7 +45,7 @@ namespace PTPFileSender.Views
                     if (await uploadController.ConnectNode(key))
                     {
                         NodeKey_TextBox.IsEnabled = false;
-                        button.Content = "Отключиться";
+                        button.Content = Str.Disconnect;
                     }
                 }
                 button.IsEnabled = true;

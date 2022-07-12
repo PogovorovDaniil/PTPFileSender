@@ -1,5 +1,6 @@
 ﻿using GPeerToPeer.Client;
 using Microsoft.Win32;
+using PTPFileSender.Constants;
 using PTPFileSender.Services;
 using System.IO;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace PTPFileSender.Controllers
         {
             if (!node.HasValue)
             {
-                MessageBox.Show("Нет активного соединения");
+                MessageBox.Show(Str.NodeNotConnected);
                 return;
             }
             MoveProgressBar?.Invoke(40);
