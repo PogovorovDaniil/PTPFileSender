@@ -12,9 +12,9 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
-        <Button Grid.Row="0" Margin="10" Height="30" Content="Сохранить файл"/>
-        <ProgressBar Grid.Row="1" Margin="10" Value="40" Height="30"/>
-        <Button Grid.Row="2" Margin="10" Content="Отмена" Height="30"/>
+
+        <Button Grid.Row="0" Margin="10" Height="30" Content="Сохранить файл" Click="SaveFile_Button_Click"/>
+        <ProgressBar Grid.Row="1" Margin="10" Height="30" x:Name="Download_ProgressBar"/>
+        <Button Grid.Row="2" Margin="10" Content="Отмена" Height="30" Click="Cancel_Button_Click"/>
     </Grid>
 </Window>

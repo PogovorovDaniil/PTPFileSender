@@ -8,7 +8,8 @@
         Title="MainWindow" SizeToContent="WidthAndHeight">
     <Grid Height="300" Width="400">
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="0.5*"/>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
@@ -18,10 +19,11 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Row="0" Grid.Column="0" Height="20" Margin="10"/>
-        <Button Grid.Row="0" Grid.Column="1" Height="30" Margin="10" Content="Подключиться"/>
-        <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" Value="40"/>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" Content="Выбрать файл"/>
-        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" Content="Отправить"/>
+        <TextBox Grid.Row="0" Grid.Column="0" Height="20" Margin="10,5" VerticalAlignment="Bottom" x:Name="NodeKey_TextBox"/>
+        <TextBox Grid.Row="1" Grid.Column="0" Height="20" Margin="10,5" VerticalAlignment="Top" x:Name="SelfKey_TextBox" IsReadOnly="True"/>
+        <Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Height="30" Margin="10" Content="Подключиться" Click="ConnectNode_Button_Click"/>
+        <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" x:Name="Upload_ProgressBar"/>
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" Content="Выбрать файл" Click="ChooseFile_Button_Click"/>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Margin="10" Content="Отправить" Click="SendFile_Button_Click"/>
     </Grid>
 </Window>
