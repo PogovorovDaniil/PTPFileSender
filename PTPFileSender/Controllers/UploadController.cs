@@ -1,9 +1,9 @@
 ﻿using GPeerToPeer.Client;
 using Microsoft.Win32;
 using PTPFileSender.Services;
-using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PTPFileSender.Controllers
 {
@@ -50,6 +50,11 @@ namespace PTPFileSender.Controllers
 
         public void UploadFile()
         {
+            if (!node.HasValue)
+            {
+                MessageBox.Show("Нет активного соединения");
+                return;
+            }
             MoveProgressBar?.Invoke(40);
         }
     }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PTPFileSender.Controllers
+﻿namespace PTPFileSender.Controllers
 {
     internal class DownloadController : IDownloadController
     {

@@ -1,23 +1,10 @@
 ﻿using PTPFileSender.Controllers;
 using PTPFileSender.Helpers;
 using PTPFileSender.Services;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace PTPFileSender
+namespace PTPFileSender.Views
 {
     public partial class MainWindow : Window
     {
@@ -43,6 +30,7 @@ namespace PTPFileSender
         {
             if(sender is Button button)
             {
+                button.IsEnabled = false;
                 if (uploadController.NodeIsConnected())
                 {
                     uploadController.DisconnectNode();
@@ -59,6 +47,7 @@ namespace PTPFileSender
                         button.Content = "Отключиться";
                     }
                 }
+                button.IsEnabled = true;
             }
         }
 

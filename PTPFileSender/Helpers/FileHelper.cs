@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PTPFileSender.Helpers
+﻿namespace PTPFileSender.Helpers
 {
     internal static class FileHelper
     {
