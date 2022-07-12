@@ -39,18 +39,38 @@ namespace PTPFileSender
             });
         }
 
-        private void ConnectNode_Button_Click(object sender, RoutedEventArgs e)
+        private async void ConnectNode_Button_Click(object sender, RoutedEventArgs e)
         {
-            string key = NodeKey_TextBox.Text;
-            uploadController.ConnectNode(key);
+            if(sender is Button button)
+            {
+                if (uploadController.NodeIsConnected())
+                {
+                    uploadController.DisconnectNode();
+                    NodeKey_TextBox.IsEnabled = true;
+                    button.Content = "Подключиться";
+
+                }
+                else
+                {
+                    string key = NodeKey_TextBox.Text;
+                    if (await uploadController.ConnectNode(key))
+                    {
+                        NodeKey_TextBox.IsEnabled = false;
+                        button.Content = "Отключиться";
+                    }
+                }
+            }
         }
 
         private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
         {
-            string path = uploadController.ChooseFile();
-            if(path.Length > 0 && sender is Button button)
+            if(sender is Button button)
             {
-                button.Content = FileHelper.NameFromPath(path);
+                string path = uploadController.ChooseFile();
+                if(path.Length > 0)
+                {
+                    button.Content = FileHelper.NameFromPath(path);
+                }
             }
         }
 

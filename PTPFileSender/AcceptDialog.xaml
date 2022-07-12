@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PTPFileSender"
         mc:Ignorable="d"
-        Title="AcceptDialog" SizeToContent="WidthAndHeight">
+        Title="Загрузка файла" SizeToContent="WidthAndHeight">
     <Grid Height="200" Width="300">
         <Grid.RowDefinitions>
             <RowDefinition/>

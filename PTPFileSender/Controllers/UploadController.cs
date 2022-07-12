@@ -11,12 +11,12 @@ namespace PTPFileSender.Controllers
     {
         public event IUploadController.MoveProgressBarHandler MoveProgressBar;
 
-        private PTPNode node;
+        private PTPNode? node;
         FileStream file;
 
         public UploadController()
         {
-            node = default;
+            node = null;
             file = null;
         }
 
@@ -31,11 +31,21 @@ namespace PTPFileSender.Controllers
             return "";
         }
 
+        public bool NodeIsConnected()
+        {
+            return node.HasValue;
+        }
+
         public async Task<bool> ConnectNode(string key)
         {
             bool connected = await PTPService.ConnectNode(key);
             node = new PTPNode(key);
             return connected;
+        }
+
+        public void DisconnectNode()
+        {
+            node = null;
         }
 
         public void UploadFile()

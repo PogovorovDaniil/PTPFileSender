@@ -8,11 +8,12 @@ namespace PTPFileSender.Services
         private static PTPClient client;
         static PTPService()
         {
-            client = new PTPClient("194.61.3.168", 22345, 22345);
+            client = new PTPClient("194.61.3.168", 22345, 0);
+            Task.Run(client.Work);
         }
         public static async Task<bool> ConnectNode(string key)
         {
-            return await client.ReachConnectionAsync(new PTPNode(key));
+            return await client.ReachConnectionAsync(key);
         }
         public static string GetSelfKey()
         {
