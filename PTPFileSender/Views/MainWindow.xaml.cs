@@ -19,14 +19,12 @@ namespace PTPFileSender.Views
             string selfKey = PTPService.GetSelfKey();
             SelfKey_TextBox.Text = selfKey;
         }
-
         private void UploadController_MoveProgressBar(double percent)
         {
             Upload_ProgressBar.Dispatcher.Invoke(() => {
                 Upload_ProgressBar.Value = percent;
             });
         }
-
         private async void ConnectNode_Button_Click(object sender, RoutedEventArgs e)
         {
             if(sender is Button button)
@@ -51,7 +49,6 @@ namespace PTPFileSender.Views
                 button.IsEnabled = true;
             }
         }
-
         private void ChooseFile_Button_Click(object sender, RoutedEventArgs e)
         {
             if(sender is Button button)
@@ -63,7 +60,6 @@ namespace PTPFileSender.Views
                 }
             }
         }
-
         private void SendFile_Button_Click(object sender, RoutedEventArgs e)
         {
             uploadController.UploadFile();

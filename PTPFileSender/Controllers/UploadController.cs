@@ -11,16 +11,13 @@ namespace PTPFileSender.Controllers
     internal class UploadController : IUploadController
     {
         public event IUploadController.MoveProgressBarHandler MoveProgressBar;
-
         private PTPNode? node;
         FileStream file;
-
         public UploadController()
         {
             node = null;
             file = null;
         }
-
         public string ChooseFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -31,24 +28,28 @@ namespace PTPFileSender.Controllers
             }
             return "";
         }
-
         public bool NodeIsConnected()
         {
             return node.HasValue;
         }
-
         public async Task<bool> ConnectNode(string key)
         {
-            bool connected = await PTPService.ConnectNode(key);
-            node = new PTPNode(key);
-            return connected;
+            try
+            {
+                bool connected = await PTPService.ConnectNode(key);
+                node = new PTPNode(key);
+                return connected;
+            }
+            catch
+            {
+                MessageBox.Show(Str.InvalidKeyFormat);
+                return false;
+            }
         }
-
         public void DisconnectNode()
         {
             node = null;
         }
-
         public void UploadFile()
         {
             if (!node.HasValue)
