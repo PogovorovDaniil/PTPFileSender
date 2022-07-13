@@ -2,12 +2,13 @@
 using Microsoft.Win32;
 using PTPFileSender.Models;
 using PTPFileSender.Services;
+using System.Threading.Tasks;
 
 namespace PTPFileSender.Controllers
 {
     internal class DownloadController : IDownloadController
     {
-        public event IDownloadController.MoveProgressBarHandler MoveProgressBar;
+        public event IWindowEvents.MoveProgressBarHandler MoveProgressBar;
         private FileInformation fileInformation;
         public DownloadController(FileInformation fileInformation)
         {
@@ -22,7 +23,7 @@ namespace PTPFileSender.Controllers
             if(saveFileDialog.ShowDialog() ?? false)
             {
                 string path = saveFileDialog.FileName;
-                LoadFileService.DownloadProcess(fileInformation, path, isDownload, node);
+                Task.Run(() => LoadFileService.DownloadProcess(fileInformation, path, isDownload, node, MoveProgressBar));
             }
         }
     }

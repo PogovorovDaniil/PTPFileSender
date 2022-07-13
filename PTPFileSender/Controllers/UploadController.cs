@@ -13,7 +13,7 @@ namespace PTPFileSender.Controllers
 {
     internal class UploadController : IUploadController
     {
-        public event IUploadController.MoveProgressBarHandler MoveProgressBar;
+        public event IWindowEvents.MoveProgressBarHandler MoveProgressBar;
         private PTPNode? node;
         FileStream file;
         public UploadController()
@@ -65,8 +65,7 @@ namespace PTPFileSender.Controllers
                 MessageBox.Show(Str.FileNotChoosen);
                 return;
             }
-            LoadFileService.UploadProcess(file.Name, node.Value);
-            MoveProgressBar?.Invoke(40);
+            Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
         }
 
         public void GetUploadRequest(object obj, EventArgs e)

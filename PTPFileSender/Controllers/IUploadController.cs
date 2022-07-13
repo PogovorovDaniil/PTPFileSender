@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace PTPFileSender.Controllers
 {
-    internal interface IUploadController
+    internal interface IUploadController : IWindowEvents
     {
         Task<bool> ConnectNode(string key);
         public void DisconnectNode();
@@ -11,7 +11,6 @@ namespace PTPFileSender.Controllers
         string ChooseFile();
         void UploadFile();
         public void GetUploadRequest(object obj, EventArgs e);
-        delegate void MoveProgressBarHandler(double percent);
         event MoveProgressBarHandler MoveProgressBar;
     }
 }
