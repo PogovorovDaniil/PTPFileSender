@@ -1,8 +1,10 @@
 ﻿using GPeerToPeer.Client;
 using Microsoft.Win32;
+using PTPFileSender.Constants;
 using PTPFileSender.Models;
 using PTPFileSender.Services;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PTPFileSender.Controllers
 {
@@ -14,7 +16,7 @@ namespace PTPFileSender.Controllers
         {
             this.fileInformation = fileInformation;
         }
-        public void DownloadFile(PTPNode node, bool isDownload)
+        public async Task DownloadFile(PTPNode node, bool isDownload)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             string[] splittedName = fileInformation.FileName.Split('.');
@@ -23,7 +25,8 @@ namespace PTPFileSender.Controllers
             if(saveFileDialog.ShowDialog() ?? false)
             {
                 string path = saveFileDialog.FileName;
-                Task.Run(() => LoadFileService.DownloadProcess(fileInformation, path, isDownload, node, MoveProgressBar));
+                await Task.Run(() => LoadFileService.DownloadProcess(fileInformation, path, isDownload, node, MoveProgressBar));
+                MessageBox.Show(Str.FileLoaded);
             }
         }
     }

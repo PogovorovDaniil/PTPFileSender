@@ -22,9 +22,10 @@ namespace PTPFileSender.Views
                 Download_ProgressBar.Value = percent;
             });
         }
-        private void SaveFile_Button_Click(object sender, RoutedEventArgs e)
+        private async void SaveFile_Button_Click(object sender, RoutedEventArgs e)
         {
-            downloadController.DownloadFile(node, true);
+            await downloadController.DownloadFile(node, true);
+            Close();
         }
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {

@@ -1,10 +1,11 @@
 ﻿using GPeerToPeer.Client;
+using System.Threading.Tasks;
 
 namespace PTPFileSender.Controllers
 {
     internal interface IDownloadController : IWindowEvents
     {
-        void DownloadFile(PTPNode node, bool isDownload);
+        Task DownloadFile(PTPNode node, bool isDownload);
         event MoveProgressBarHandler MoveProgressBar;
     }
 }

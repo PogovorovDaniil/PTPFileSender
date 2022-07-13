@@ -7,5 +7,6 @@
         public static string Connect = "Подключиться";
         public static string Disconnect = "Отключиться";
         public static string InvalidKeyFormat = "Неверный формат ключа";
+        public static string FileLoaded = "Файл передан успешно";
     }
 }

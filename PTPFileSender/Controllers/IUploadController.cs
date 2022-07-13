@@ -9,7 +9,7 @@ namespace PTPFileSender.Controllers
         public void DisconnectNode();
         public bool NodeIsConnected();
         string ChooseFile();
-        void UploadFile();
+        Task UploadFile();
         public void GetUploadRequest(object obj, EventArgs e);
         event MoveProgressBarHandler MoveProgressBar;
     }

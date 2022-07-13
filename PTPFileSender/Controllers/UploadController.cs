@@ -53,7 +53,7 @@ namespace PTPFileSender.Controllers
         {
             node = null;
         }
-        public void UploadFile()
+        public async Task UploadFile()
         {
             if (!node.HasValue)
             {
@@ -65,7 +65,8 @@ namespace PTPFileSender.Controllers
                 MessageBox.Show(Str.FileNotChoosen);
                 return;
             }
-            Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
+            await Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
+            MessageBox.Show(Str.FileLoaded);
         }
 
         public void GetUploadRequest(object obj, EventArgs e)

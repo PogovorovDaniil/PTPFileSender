@@ -43,6 +43,10 @@ namespace PTPFileSender.Services
                                 PeerToPeerService.SendFast(filePiece, node);
                             }
                         }
+                        if(PeerToPeerService.Get(out EndRequest endRequest, node))
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -103,6 +107,7 @@ namespace PTPFileSender.Services
                     }
                     moveProgressBar?.Invoke(progress * 100 / received.Length);
                 } while (receivedIndexesEnd > 0) ;
+                PeerToPeerService.Send(new EndRequest() { IsEnd = true }, node);
             }
         }
     }

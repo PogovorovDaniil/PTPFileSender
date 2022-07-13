@@ -1,7 +1,6 @@
 ﻿using PTPFileSender.Constants;
 using PTPFileSender.Controllers;
 using PTPFileSender.Helpers;
-using PTPFileSender.Models;
 using PTPFileSender.Services;
 using System;
 using System.Windows;
@@ -68,9 +67,10 @@ namespace PTPFileSender.Views
                 }
             }
         }
-        private void SendFile_Button_Click(object sender, RoutedEventArgs e)
+        private async void SendFile_Button_Click(object sender, RoutedEventArgs e)
         {
-            uploadController.UploadFile();
+            await uploadController.UploadFile();
+            Upload_ProgressBar.Value = 0;
         }
     }
 }
