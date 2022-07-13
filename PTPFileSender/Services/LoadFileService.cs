@@ -76,7 +76,7 @@ namespace PTPFileSender.Services
                 int index = 0;
                 do
                 {
-                    if (index == receivedIndexes.Length)
+                    if (index >= receivedIndexes.Length)
                     {
                         index = 0;
                         Array.Resize(ref receivedIndexes, receivedIndexesEnd);
@@ -84,13 +84,13 @@ namespace PTPFileSender.Services
                     }
                     int[] piecesIndexes = new int[Pieces.PIECE_COUNT];
                     int j;
-                    for (j = 0; j < piecesIndexes.Length; j++)
+                    for (j = 0; j < piecesIndexes.Length; )
                     {
-                        if (index == receivedIndexes.Length) break;
+                        if (index >= receivedIndexes.Length) break;
                         if (!received[receivedIndexes[index]])
                         {
                             receivedIndexes[receivedIndexesEnd] = receivedIndexes[index];
-                            piecesIndexes[j] = receivedIndexes[index];
+                            piecesIndexes[j++] = receivedIndexes[index];
                             receivedIndexesEnd++;
                         }
                         index++;
@@ -98,17 +98,12 @@ namespace PTPFileSender.Services
                     Array.Resize(ref piecesIndexes, j);
                     Pieces pieces = new Pieces() { PieceIndexes = piecesIndexes, Progress = progress * 100 / received.Length };
                     PeerToPeerService.SendFast(pieces, node);
-                    while (PeerToPeerService.GetFast(out FilePiece piece, node))
+                    while (PeerToPeerService.GetFast(out FilePiece piece, node) && received[piece.Location] == false)
                     {
                         progress++;
                         fs.Seek((long)piece.Location * FilePiece.PIECE_SIZE, SeekOrigin.Begin);
                         foreach(var fileByte in piece.Piece) fs.WriteByte(fileByte);
-                        for(int i = 0; i < FilePiece.PIECE_SIZE; i++)
-                        {
-                            int pos = piece.Location * FilePiece.PIECE_SIZE + i;
-                            if (pos > received.Length) break;
-                            received[pos] = true;
-                        }
+                        received[piece.Location] = true;
                     }
                     moveProgressBar?.Invoke(progress * 100 / received.Length);
                 } while (receivedIndexesEnd > 0) ;

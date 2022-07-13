@@ -40,7 +40,7 @@ namespace PTPFileSender.Controllers
             try
             {
                 bool connected = await PeerToPeerService.ConnectNode(key);
-                node = new PTPNode(key);
+                if(connected) node = new PTPNode(key);
                 return connected;
             }
             catch
