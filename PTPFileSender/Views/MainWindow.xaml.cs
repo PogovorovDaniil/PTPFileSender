@@ -69,8 +69,13 @@ namespace PTPFileSender.Views
         }
         private async void SendFile_Button_Click(object sender, RoutedEventArgs e)
         {
-            await uploadController.UploadFile();
-            Upload_ProgressBar.Value = 0;
+            if (sender is Button button)
+            {
+                button.IsEnabled = false;
+                await uploadController.UploadFile();
+                Upload_ProgressBar.Value = 0;
+                button.IsEnabled = true;
+            }
         }
     }
 }
