@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PTPFileSender"
         mc:Ignorable="d"
-        Title="Отправить файл" SizeToContent="WidthAndHeight">
+        Title="Отправить файл" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <Grid Height="300" Width="400">
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
