@@ -1,4 +1,5 @@
 ﻿using GPeerToPeer.Client;
+using PTPFileSender.Models;
 using System.Threading.Tasks;
 
 namespace PTPFileSender.Services
@@ -18,6 +19,40 @@ namespace PTPFileSender.Services
         public static string GetSelfKey()
         {
             return client.selfNode.Key;
+        }
+
+        public static bool GetFast<T>(out T value, PTPNode node) where T : IPacket, new()
+        {
+            value = new T();
+            if (client.ReceiveMessageWithoutConfirmationFrom(out PTPNode nodeFrom, out byte[] bytes, value.GetChannel()))
+            {
+                if (nodeFrom.Key != node.Key) return false;
+                value.GetFromBytes(bytes);
+                return true;
+            }
+            return false;
+        }
+        public static void SendFast<T>(T value, PTPNode node) where T : IPacket
+        {
+            byte[] bytes = value.GetBytes();
+            client.SendMessageWithoutConfirmationTo(node, bytes, value.GetChannel());
+        }
+
+        public static bool Get<T>(out T value, PTPNode node) where T : IPacket, new()
+        {
+            value = new T();
+            if (client.ReceiveMessageFrom(out PTPNode nodeFrom, out byte[] bytes, value.GetChannel()))
+            {
+                if (nodeFrom.Key != node.Key) return false;
+                value.GetFromBytes(bytes);
+                return true;
+            }
+            return false;
+        }
+        public static void Send<T>(T value, PTPNode node) where T : IPacket
+        {
+            byte[] bytes = value.GetBytes();
+            client.SendMessageTo(node, bytes, value.GetChannel());
         }
     }
 }
