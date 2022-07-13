@@ -2,16 +2,16 @@
 
 namespace PTPFileSender.Models
 {
-    internal class SendRequest : IPacket
+    internal class DownloadRequest : IPacket
     {
-        public byte Request { get; set; }
+        public bool IsDownload { get; set; }
         public void GetFromBytes(byte[] bytes)
         {
-            Request = bytes[0];
+            IsDownload = bytes[0] > 0;
         }
         public byte[] GetBytes()
         {
-            return new byte[] { Request };
+            return new byte[] { IsDownload ? (byte)1 : (byte)0 };
         }
         public byte GetChannel()
         {

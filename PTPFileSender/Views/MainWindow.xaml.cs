@@ -1,9 +1,12 @@
 ﻿using PTPFileSender.Constants;
 using PTPFileSender.Controllers;
 using PTPFileSender.Helpers;
+using PTPFileSender.Models;
 using PTPFileSender.Services;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace PTPFileSender.Views
 {
@@ -18,6 +21,11 @@ namespace PTPFileSender.Views
 
             string selfKey = PeerToPeerService.GetSelfKey();
             SelfKey_TextBox.Text = selfKey;
+
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += uploadController.GetUploadRequest;
+            dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+            dispatcherTimer.Start();
         }
         private void UploadController_MoveProgressBar(double percent)
         {

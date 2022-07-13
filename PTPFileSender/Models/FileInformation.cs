@@ -10,7 +10,7 @@ namespace PTPFileSender.Models
         public string FileName { get; set; }
         public void GetFromBytes(byte[] bytes)
         {
-            byte[] count = new byte[4];
+            byte[] count = new byte[8];
             Array.ConstrainedCopy(bytes, 0, count, 0, count.Length);
             byte[] nameSize = new byte[4];
             Array.ConstrainedCopy(bytes, count.Length, nameSize, 0, nameSize.Length);

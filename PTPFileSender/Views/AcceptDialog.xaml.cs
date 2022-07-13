@@ -1,4 +1,6 @@
-﻿using PTPFileSender.Controllers;
+﻿using GPeerToPeer.Client;
+using PTPFileSender.Controllers;
+using PTPFileSender.Models;
 using System.Windows;
 
 namespace PTPFileSender.Views
@@ -6,10 +8,12 @@ namespace PTPFileSender.Views
     public partial class AcceptDialog : Window
     {
         private IDownloadController downloadController;
-        public AcceptDialog()
+        private PTPNode node;
+        public AcceptDialog(FileInformation fileInformation, PTPNode node)
         {
             InitializeComponent();
-            downloadController = new DownloadController();
+            downloadController = new DownloadController(fileInformation);
+            this.node = node;
             downloadController.MoveProgressBar += DownloadController_MoveProgressBar;
         }
         private void DownloadController_MoveProgressBar(double percent)
@@ -20,7 +24,7 @@ namespace PTPFileSender.Views
         }
         private void SaveFile_Button_Click(object sender, RoutedEventArgs e)
         {
-            downloadController.DownloadFile();
+            downloadController.DownloadFile(node, true);
         }
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {

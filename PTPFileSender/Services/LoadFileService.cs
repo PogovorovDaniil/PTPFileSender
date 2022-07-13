@@ -18,20 +18,25 @@ namespace PTPFileSender.Services
                     FileSize = fileInfo.Length
                 };
                 PeerToPeerService.Send(fileInformation, node);
+                DownloadRequest request;
+                while (!PeerToPeerService.Get(out request, node)) ;
+                if (request.IsDownload)
+                {
+                    
+                }
             }
         }
-        public static void DownloadProcess(string path, PTPNode node)
+        public static void DownloadProcess(FileInformation fileInformation, string path, bool isDownload, PTPNode node)
         {
+            PeerToPeerService.Send(new DownloadRequest() { IsDownload = isDownload }, node);
+            if (!isDownload) return;
+
             bool[] received;
             uint[] receivedIndexes;
-
-            if (PeerToPeerService.Get(out FileInformation fileInformation, node))
+            string filePath = path;
+            using (FileStream fs = File.Create(filePath))
             {
-                string filePath = FileHelper.AddNameToPath(path, fileInformation.FileName);
-                using (FileStream fs = File.Create(filePath))
-                {
-                    fs.SetLength(fileInformation.FileSize);
-                }
+                fs.SetLength(fileInformation.FileSize);
             }
         }
     }

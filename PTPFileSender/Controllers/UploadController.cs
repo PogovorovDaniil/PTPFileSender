@@ -1,7 +1,10 @@
 ﻿using GPeerToPeer.Client;
 using Microsoft.Win32;
 using PTPFileSender.Constants;
+using PTPFileSender.Models;
 using PTPFileSender.Services;
+using PTPFileSender.Views;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -57,7 +60,22 @@ namespace PTPFileSender.Controllers
                 MessageBox.Show(Str.NodeNotConnected);
                 return;
             }
+            if(file == null)
+            {
+                MessageBox.Show(Str.FileNotChoosen);
+                return;
+            }
+            LoadFileService.UploadProcess(file.Name, node.Value);
             MoveProgressBar?.Invoke(40);
+        }
+
+        public void GetUploadRequest(object obj, EventArgs e)
+        {
+            if(node.HasValue && PeerToPeerService.Get(out FileInformation fileInformation, node.Value))
+            {
+                AcceptDialog acceptDialog = new AcceptDialog(fileInformation, node.Value);
+                acceptDialog.ShowDialog();
+            }
         }
     }
 }
