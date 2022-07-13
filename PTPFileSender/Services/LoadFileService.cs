@@ -32,7 +32,7 @@ namespace PTPFileSender.Services
                             foreach(int location in pieces.PieceIndexes)
                             {
                                 byte[] buffer = new byte[FilePiece.PIECE_SIZE];
-                                fs.Seek(location * FilePiece.PIECE_SIZE, SeekOrigin.Begin);
+                                fs.Seek((long)location * FilePiece.PIECE_SIZE, SeekOrigin.Begin);
                                 int size = fs.Read(buffer, 0, buffer.Length);
                                 Array.Resize(ref buffer, size);
                                 FilePiece filePiece = new FilePiece()
@@ -101,9 +101,14 @@ namespace PTPFileSender.Services
                     while (PeerToPeerService.GetFast(out FilePiece piece, node))
                     {
                         progress++;
-                        fs.Seek(piece.Location * FilePiece.PIECE_SIZE, SeekOrigin.Begin);
+                        fs.Seek((long)piece.Location * FilePiece.PIECE_SIZE, SeekOrigin.Begin);
                         foreach(var fileByte in piece.Piece) fs.WriteByte(fileByte);
-                        received[piece.Location] = true;
+                        for(int i = 0; i < FilePiece.PIECE_SIZE; i++)
+                        {
+                            int pos = piece.Location * FilePiece.PIECE_SIZE + i;
+                            if (pos > received.Length) break;
+                            received[pos] = true;
+                        }
                     }
                     moveProgressBar?.Invoke(progress * 100 / received.Length);
                 } while (receivedIndexesEnd > 0) ;
