@@ -1,16 +1,43 @@
 ﻿using GPeerToPeer.Client;
+using PTPFileSender.Constants;
 using PTPFileSender.Controllers;
-using PTPFileSender.Helpers;
 using PTPFileSender.Models;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace PTPFileSender.Services
 {
     internal static class LoadFileService
     {
-        public static void UploadProcess(string path, PTPNode node, IWindowEvents.MoveProgressBarHandler moveProgressBar)
+        private static CancellationTokenSource tokenSource = new CancellationTokenSource();
+        public static bool IsProcess { get; private set; } = false;
+        public static void StopProcess()
         {
+            tokenSource.Cancel();
+        }
+        public static (bool, ProcessResult) Cancel(PTPNode node, ProcessResult processResult = ProcessResult.Canceled)
+        {
+            if (PeerToPeerService.Get(out CancelRequest _, node))
+            {
+                tokenSource = new CancellationTokenSource();
+                IsProcess = false;
+                return (true, processResult);
+            }
+            if (tokenSource.Token.IsCancellationRequested)
+            {
+                tokenSource = new CancellationTokenSource();
+                IsProcess = false;
+                PeerToPeerService.Send(new CancelRequest() { IsCancel = true }, node);
+                return (true, processResult);
+            }
+            return (false, ProcessResult.OK);
+        }
+        public static ProcessResult UploadProcess(string path, PTPNode node, IWindowEvents.MoveProgressBarHandler moveProgressBar)
+        {
+            if (IsProcess) return ProcessResult.Locked;
+            while (PeerToPeerService.Get(out CancelRequest _, node)) ;
+            IsProcess = true;
             FileInfo fileInfo = new FileInfo(path);
             using (FileStream fs = fileInfo.OpenRead())
             {
@@ -21,7 +48,11 @@ namespace PTPFileSender.Services
                 };
                 PeerToPeerService.Send(fileInformation, node);
                 DownloadRequest request;
-                while (!PeerToPeerService.Get(out request, node)) ;
+                while (!PeerToPeerService.Get(out request, node))
+                {
+                    (bool isCancel, ProcessResult processResult) = Cancel(node);
+                    if (isCancel) return processResult;
+                }
                 if (request.IsDownload)
                 {
                     while (true)
@@ -45,16 +76,26 @@ namespace PTPFileSender.Services
                         }
                         if(PeerToPeerService.Get(out EndRequest endRequest, node))
                         {
-                            break;
+                            if (endRequest.IsEnd) break;
                         }
+                        (bool isCancel, ProcessResult processResult) = Cancel(node);
+                        if (isCancel) return processResult;
                     }
                 }
             }
+            IsProcess = false;
+            return ProcessResult.OK;
         }
-        public static void DownloadProcess(FileInformation fileInformation, string path, bool isDownload, PTPNode node, IWindowEvents.MoveProgressBarHandler moveProgressBar)
+        public static ProcessResult DownloadProcess(FileInformation fileInformation, string path, PTPNode node, IWindowEvents.MoveProgressBarHandler moveProgressBar)
         {
-            PeerToPeerService.Send(new DownloadRequest() { IsDownload = isDownload }, node);
-            if (!isDownload) return;
+            if (IsProcess) return ProcessResult.Locked;
+            while (PeerToPeerService.Get(out CancelRequest _, node)) ;
+            IsProcess = true;
+            if(!PeerToPeerService.Send(new DownloadRequest() { IsDownload = true }, node))
+            {
+                IsProcess = false;
+                return ProcessResult.Lost;
+            }
 
             double progress = 0;
 
@@ -105,10 +146,18 @@ namespace PTPFileSender.Services
                         foreach(var fileByte in piece.Piece) fs.WriteByte(fileByte);
                         received[piece.Location] = true;
                     }
+                    (bool isCancel, ProcessResult processResult) = Cancel(node);
+                    if (isCancel) return processResult;
                     moveProgressBar?.Invoke(progress * 100 / received.Length);
                 } while (receivedIndexesEnd > 0) ;
-                PeerToPeerService.Send(new EndRequest() { IsEnd = true }, node);
+                if(!PeerToPeerService.Send(new EndRequest() { IsEnd = true }, node))
+                {
+                    (bool isCancel, ProcessResult processResult) = Cancel(node, ProcessResult.Lost);
+                    if (isCancel) return processResult;
+                }
             }
+            IsProcess = false;
+            return ProcessResult.OK;
         }
     }
 }

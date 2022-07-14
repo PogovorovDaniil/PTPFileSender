@@ -15,11 +15,13 @@ namespace PTPFileSender.Controllers
     {
         public event IWindowEvents.MoveProgressBarHandler MoveProgressBar;
         private PTPNode? node;
-        FileStream file;
-        public UploadController()
+        private FileStream file;
+        private Window window;
+        public UploadController(Window window)
         {
             node = null;
             file = null;
+            this.window = window;
         }
         public string ChooseFile()
         {
@@ -55,26 +57,50 @@ namespace PTPFileSender.Controllers
         }
         public async Task UploadFile()
         {
-            if (!node.HasValue)
+            window.Dispatcher.Invoke(() =>
             {
-                MessageBox.Show(Str.NodeNotConnected);
-                return;
-            }
-            if(file == null)
+                if (!node.HasValue)
+                {
+                    MessageBox.Show(Str.NodeNotConnected);
+                    return;
+                }
+                if (file == null)
+                {
+                    MessageBox.Show(Str.FileNotChoosen);
+                    return;
+                }
+            });
+            ProcessResult result = await Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
+            window.Dispatcher.Invoke(() =>
             {
-                MessageBox.Show(Str.FileNotChoosen);
-                return;
-            }
-            await Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
-            MessageBox.Show(Str.FileLoaded);
+                switch (result)
+                {
+                    case ProcessResult.OK:
+                        MessageBox.Show(Str.FileLoaded);
+                        break;
+                    case ProcessResult.Canceled:
+                        MessageBox.Show(Str.ProcessCaneled);
+                        break;
+                    case ProcessResult.Locked:
+                        MessageBox.Show(Str.ProcessLocked);
+                        break;
+                    case ProcessResult.Lost:
+                        MessageBox.Show(Str.ConnectLost);
+                        break;
+                }
+            });
         }
 
         public void GetUploadRequest(object obj, EventArgs e)
         {
             if(node.HasValue && PeerToPeerService.Get(out FileInformation fileInformation, node.Value))
             {
-                AcceptDialog acceptDialog = new AcceptDialog(fileInformation, node.Value);
-                acceptDialog.ShowDialog();
+                window.Dispatcher.Invoke(() =>
+                {
+                    AcceptDialog acceptDialog = new AcceptDialog(fileInformation, node.Value);
+                    bool? dialogResult = acceptDialog.ShowDialog();
+                    if (dialogResult != null) PeerToPeerService.Send(new CancelRequest() { IsCancel = true }, node.Value);
+                });
             }
         }
     }

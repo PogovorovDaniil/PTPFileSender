@@ -49,10 +49,10 @@ namespace PTPFileSender.Services
             }
             return false;
         }
-        public static void Send<T>(T value, PTPNode node) where T : IPacket
+        public static bool Send<T>(T value, PTPNode node) where T : IPacket
         {
             byte[] bytes = value.GetBytes();
-            client.SendMessageTo(node, bytes, value.GetChannel());
+            return client.SendMessageTo(node, bytes, value.GetChannel());
         }
     }
 }

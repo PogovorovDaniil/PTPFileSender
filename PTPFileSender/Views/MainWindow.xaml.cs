@@ -15,11 +15,11 @@ namespace PTPFileSender.Views
         public MainWindow()
         {
             InitializeComponent();
-            uploadController = new UploadController();
+            uploadController = new UploadController(this);
             uploadController.MoveProgressBar += UploadController_MoveProgressBar;
 
             string selfKey = PeerToPeerService.GetSelfKey();
-            SelfKey_TextBox.Text = selfKey;
+            SelfKey_TextBox.Content = selfKey;
 
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += uploadController.GetUploadRequest;
@@ -71,10 +71,25 @@ namespace PTPFileSender.Views
         {
             if (sender is Button button)
             {
-                button.IsEnabled = false;
-                await uploadController.UploadFile();
-                Upload_ProgressBar.Value = 0;
-                button.IsEnabled = true;
+                if (LoadFileService.IsProcess)
+                {
+                    LoadFileService.StopProcess();
+                }
+                else
+                {
+                    button.Content = Str.Cancel;
+                    await uploadController.UploadFile();
+                    button.Content = Str.Send;
+                    Upload_ProgressBar.Value = 0;
+                }
+            }
+        }
+
+        private void CopyKey_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                Clipboard.SetText(button.Content.ToString());
             }
         }
     }
