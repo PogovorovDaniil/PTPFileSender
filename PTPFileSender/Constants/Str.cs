@@ -9,6 +9,7 @@
         public static string Send = "Отправить";
         public static string Cancel = "Отмена";
         public static string Copied = "Скопировано {0}";
+        public static string SaveFileFilter = "Оригинальный формат|*.{0}|Все файлы|*.*";
         public static string ConnectLost = "Соединение потеряно";
         public static string InvalidKeyFormat = "Неверный формат ключа";
         public static string FileLoaded = "Файл передан успешно";

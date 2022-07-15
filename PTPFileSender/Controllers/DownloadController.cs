@@ -25,7 +25,7 @@ namespace PTPFileSender.Controllers
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 (saveFileDialog.FileName, saveFileDialog.DefaultExt) = FileHelper.SplitFileName(fileInformation.FileName);
-                saveFileDialog.Filter = $"Оригинальный формат|*.{saveFileDialog.DefaultExt}|Все файлы|*.*";
+                saveFileDialog.Filter = string.Format(Str.SaveFileFilter, saveFileDialog.DefaultExt);
                 return (saveFileDialog.ShowDialog() ?? false, saveFileDialog.FileName);
             });
         }
