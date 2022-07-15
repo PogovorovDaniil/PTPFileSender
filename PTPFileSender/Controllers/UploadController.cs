@@ -16,6 +16,7 @@ namespace PTPFileSender.Controllers
         public event IWindowEvents.MoveProgressBarHandler MoveProgressBar;
         private PTPNode? node;
         private FileStream file;
+        private string path;
         private Window window;
         public UploadController(Window window)
         {
@@ -28,6 +29,7 @@ namespace PTPFileSender.Controllers
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() ?? false)
             {
+                path = openFileDialog.FileName;
                 file = File.OpenRead(openFileDialog.FileName);
                 return openFileDialog.FileName;
             }
@@ -57,19 +59,20 @@ namespace PTPFileSender.Controllers
         }
         public async Task UploadFile()
         {
-            window.Dispatcher.Invoke(() =>
+            if (window.Dispatcher.Invoke(() =>
             {
                 if (!node.HasValue)
                 {
                     MessageBox.Show(Str.NodeNotConnected);
-                    return;
+                    return true;
                 }
-                if (file == null)
+                if (path == null)
                 {
                     MessageBox.Show(Str.FileNotChoosen);
-                    return;
+                    return true;
                 }
-            });
+                return false;
+            })) return;
             ProcessResult result = await Task.Run(() => LoadFileService.UploadProcess(file.Name, node.Value, MoveProgressBar));
             window.Dispatcher.Invoke(() =>
             {

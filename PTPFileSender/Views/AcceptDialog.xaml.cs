@@ -24,11 +24,20 @@ namespace PTPFileSender.Views
 
         private async void AcceptDialog_Initialized()
         {
-            await downloadController.DownloadFile(node);
-            Dispatcher.Invoke(() =>
+            if(await downloadController.DownloadFile(node))
             {
-                DialogResult = true;
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    DialogResult = true;
+                });
+            }
+            else
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    Close();
+                });
+            }
         }
 
         private void DownloadController_MoveProgressBar(double percent)

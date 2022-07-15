@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:PTPFileSender"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary Source="Views/Styles.xaml"/>
     </Application.Resources>
 </Application>

@@ -1,6 +1,7 @@
 ﻿using GPeerToPeer.Client;
 using Microsoft.Win32;
 using PTPFileSender.Constants;
+using PTPFileSender.Helpers;
 using PTPFileSender.Models;
 using PTPFileSender.Services;
 using System.Threading.Tasks;
@@ -23,13 +24,12 @@ namespace PTPFileSender.Controllers
             return await window.Dispatcher.InvokeAsync(() =>
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
-                string[] splittedName = fileInformation.FileName.Split('.');
-                saveFileDialog.FileName = splittedName[0];
-                if (splittedName.Length > 1) saveFileDialog.DefaultExt = splittedName[1];
+                (saveFileDialog.FileName, saveFileDialog.DefaultExt) = FileHelper.SplitFileName(fileInformation.FileName);
+                saveFileDialog.Filter = $"Оригинальный формат|*.{saveFileDialog.DefaultExt}|Все файлы|*.*";
                 return (saveFileDialog.ShowDialog() ?? false, saveFileDialog.FileName);
             });
         }
-        public async Task DownloadFile(PTPNode node)
+        public async Task<bool> DownloadFile(PTPNode node)
         {
             (bool dialogResult, string path) = await SaveFile();
             if (dialogResult)
@@ -53,7 +53,9 @@ namespace PTPFileSender.Controllers
                             break;
                     }
                 });
+                return result == ProcessResult.OK;
             }
+            return false;
         }
     }
 }

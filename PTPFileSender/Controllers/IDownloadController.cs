@@ -5,7 +5,7 @@ namespace PTPFileSender.Controllers
 {
     internal interface IDownloadController : IWindowEvents
     {
-        Task DownloadFile(PTPNode node);
+        Task<bool> DownloadFile(PTPNode node);
         event MoveProgressBarHandler MoveProgressBar;
     }
 }

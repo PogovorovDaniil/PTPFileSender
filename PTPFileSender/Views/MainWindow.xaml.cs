@@ -3,6 +3,7 @@ using PTPFileSender.Controllers;
 using PTPFileSender.Helpers;
 using PTPFileSender.Services;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -74,6 +75,7 @@ namespace PTPFileSender.Views
                 if (LoadFileService.IsProcess)
                 {
                     LoadFileService.StopProcess();
+                    button.IsEnabled = false;
                 }
                 else
                 {
@@ -81,15 +83,22 @@ namespace PTPFileSender.Views
                     await uploadController.UploadFile();
                     button.Content = Str.Send;
                     Upload_ProgressBar.Value = 0;
+                    button.IsEnabled = true;
                 }
             }
         }
 
-        private void CopyKey_Button_Click(object sender, RoutedEventArgs e)
+        private async void CopyKey_Button_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button)
             {
-                Clipboard.SetText(button.Content.ToString());
+                string selfKey = PeerToPeerService.GetSelfKey();
+                Clipboard.SetText(selfKey);
+                button.Content = string.Format(Str.Copied, selfKey);
+                button.IsEnabled = false;
+                await Task.Delay(2000);
+                button.Content = selfKey;
+                button.IsEnabled = true;
             }
         }
     }
