@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="GPeerToPeer">
-      <HintPath>..\..\GPeerToPeer\GPeerToPeer\bin\Release\net6.0\GPeerToPeer.dll</HintPath>
+      <HintPath>ThirdParty\GPeerToPeer.dll</HintPath>
     </Reference>
   </ItemGroup>
 
